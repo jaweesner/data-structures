@@ -36,11 +36,15 @@ HashTable.prototype.retrieve = function(k) {
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var hashArray = this._storage.get(index);
+  if (hashArray){
     for (var i = 0; i < hashArray.length; i++) {
       if (hashArray[i].get(0) === k){
         hashArray.splice(i,1);
+        return;
+      }
     }
   }
+  throw new Error(`Can't remove nonexistent values`);
   
   
 };

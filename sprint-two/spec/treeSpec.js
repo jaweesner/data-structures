@@ -40,5 +40,13 @@ describe('tree', function() {
     expect(tree.contains(7)).to.equal(true);
     expect(tree.contains(8)).to.equal(true);
   });
+  
+  it('should check that children are added to correct node', function() {
+    tree.addChild(5);
+    tree.addChild(5);
+    tree.addChild(5);
+    tree.addChild(5);
+    expect(tree.children.length).to.equal(4);
+  });
 
 });
