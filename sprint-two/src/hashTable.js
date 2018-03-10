@@ -3,6 +3,7 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
+  this._load = 0; 
 };
 
 HashTable.prototype.insert = function(k, v) {
@@ -21,6 +22,8 @@ HashTable.prototype.insert = function(k, v) {
   tuple.set(0,k);
   tuple.set(1,v);
   this._storage.get(index).push(tuple);
+  this._load ++;
+  this.resize();
 };
 
 HashTable.prototype.retrieve = function(k) {
@@ -40,6 +43,8 @@ HashTable.prototype.remove = function(k) {
     for (var i = 0; i < hashArray.length; i++) {
       if (hashArray[i].get(0) === k){
         hashArray.splice(i,1);
+        this._load --;
+        this.resize();
         return;
       }
     }
@@ -49,6 +54,42 @@ HashTable.prototype.remove = function(k) {
   
 };
 
+HashTable.prototype.resize = function() {
+  var loadRatio = this._load / this._limit ;
+  if ((loadRatio < 0.75 && loadRatio > 0.25) || (loadRatio <= 0.25 && this._limit === 8)) return ;
+  
+  var newLimitArr;
+  
+  var newLimit;
+  
+  if (loadRatio >= 0.75){
+    // create new doubled array
+    newLimit = 2 * this._limit;
+    newLimitArr = LimitedArray(newLimit);
+  } else {
+    newLimit = this._limit / 2;
+    newLimitArr = LimitedArray(newLimit);
+  }
+  
+  this._storage.each(innerArr => {
+    if (!innerArr) return ;
+    for (var i = 0; i < innerArr.length; i++){
+      var index = getIndexBelowMaxForKey(innerArr[i].get(0), newLimit);
+
+      if (newLimitArr.get(index) === undefined){
+        newLimitArr.set(index,[]);
+      }
+        
+      var tuple = LimitedArray(2);
+      tuple.set(0,innerArr[i].get(0));
+      tuple.set(1,innerArr[i].get(1));
+      newLimitArr.get(index).push(tuple);
+
+    }
+  })
+  this._storage = newLimitArr;
+  this._limit = newLimit;
+};
 
 
 /*
