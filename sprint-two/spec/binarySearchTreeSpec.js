@@ -45,4 +45,12 @@ describe('binarySearchTree', function() {
     binarySearchTree.insert(5); 
     expect(binarySearchTree.right.right.right.value).to.equal(5);
   });
+
+  it('should return an array every value in a tree in breadth first order', function() {
+    binarySearchTree.insert(2);
+    binarySearchTree.insert(3);
+    binarySearchTree.insert(7);
+    expect(binarySearchTree.breadthFirstLog()).to.eql([5, 2, 7, 3]);
+  });
+  
 });

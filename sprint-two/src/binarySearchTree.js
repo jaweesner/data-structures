@@ -43,6 +43,18 @@ BinarySearchTree.prototype.depthFirstLog = function(cb) {
 
 };
 
+BinarySearchTree.prototype.breadthFirstLog = function() {
+    var queue = [];
+    var recurseQueue = function(inQueue, i){
+      if(i >= inQueue.length) return inQueue;
+      if (inQueue[i].left) inQueue.push(inQueue[i].left)
+      if (inQueue[i].right) inQueue.push(inQueue[i].right)
+      return recurseQueue(inQueue, ++i );
+    }
+    queue.push(this);
+    var resultArray = recurseQueue(queue, 0);
+    return resultArray.map(node => node.value)
+};
 
 
 /*
